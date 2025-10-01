@@ -1,11 +1,9 @@
-// src/hooks/useAuth.ts
 import { useState, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { authService } from "../services/authService";
 
 const TOKEN_KEY = "token";
 
-// Defina o tipo do usuário conforme a resposta da API /(auth)/me
 export type User = {
   nome: string;
   email: string;
@@ -16,7 +14,6 @@ export function useAuth() {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // Inicialização do hook
   useEffect(() => {
     let mounted = true;
 
@@ -72,7 +69,7 @@ export function useAuth() {
       return data;
     } catch (err) {
       console.error("Erro no login:", err);
-      throw err; // repassa para o componente tratar
+      throw err;
     } finally {
       setLoading(false);
     }

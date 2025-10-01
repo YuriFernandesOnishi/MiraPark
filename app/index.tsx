@@ -1,15 +1,15 @@
 import React from "react";
 import { View, Text, Image, TouchableOpacity, StyleSheet } from "react-native";
 import { useRouter } from "expo-router";
-import logo from "../assets/logo.png";
+import {SafeAreaView} from "react-native-safe-area-context";
 
 export default function Home() {
   const router = useRouter();
 
   return (
-      <View style={styles.container}>
+      <SafeAreaView style={styles.container} >
         <View style={styles.hero}>
-          <Image source={logo} style={styles.logo} resizeMode="contain" />
+          <Image source={require("../assets/logo.png")} style={styles.logo} resizeMode="contain" />
           <Text style={styles.title}>MiraPark</Text>
           <Text style={styles.subtitle}>Gerencie sua garagem de forma simples</Text>
         </View>
@@ -29,7 +29,7 @@ export default function Home() {
             <Text style={styles.buttonText}>Registrar</Text>
           </TouchableOpacity>
         </View>
-      </View>
+      </SafeAreaView>
   );
 }
 
@@ -44,10 +44,10 @@ const styles = StyleSheet.create({
   hero: { alignItems: "center" },
   logo: { width: 150, height: 150, marginBottom: 20 },
   title: { fontSize: 32, fontWeight: "700", color: "#6C63FF", marginBottom: 8 },
-  subtitle: { fontSize: 16, color: "#A0A0FF", textAlign: "center", paddingHorizontal: 40 },
+  subtitle: { fontSize: 22, color: "#A0A0FF", textAlign: "center", paddingHorizontal: 40 },
   buttonsContainer: { width: "100%", paddingHorizontal: 40 },
   button: { paddingVertical: 16, borderRadius: 12, marginVertical: 8, alignItems: "center" },
-  loginButton: { backgroundColor: "#4B7BEC" },
+  loginButton: { backgroundColor: "#6C63FF" },
   registerButton: { backgroundColor: "#6C63FF" },
   buttonText: { color: "#fff", fontWeight: "600", fontSize: 18 },
 });
