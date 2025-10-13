@@ -24,9 +24,7 @@ export default function LoginScreen() {
             const res = await api.post("/auth/login", { email, senha });
 
             if (res.data?.token) {
-                // Salva token
                 await AsyncStorage.setItem("token", res.data.token);
-                // Redireciona para Vehiclelist
                 router.replace("/vehiclelist");
             } else {
                 Alert.alert("Erro", "Credenciais inválidas");

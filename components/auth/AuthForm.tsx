@@ -1,6 +1,5 @@
 import React from 'react';
 import { View, Text, KeyboardAvoidingView, Platform, StyleSheet } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
 interface AuthFormProps {
   title: string;
@@ -10,7 +9,7 @@ interface AuthFormProps {
 
 export default function AuthForm({ title, subtitle, children }: AuthFormProps) {
   return (
-      <SafeAreaView style={styles.safeArea}>
+      <View style={styles.safeArea}>
         <KeyboardAvoidingView
             style={styles.container}
             behavior={Platform.OS === "ios" ? "padding" : undefined}
@@ -22,7 +21,7 @@ export default function AuthForm({ title, subtitle, children }: AuthFormProps) {
 
           {children}
         </KeyboardAvoidingView>
-      </SafeAreaView>
+      </View>
   );
 }
 

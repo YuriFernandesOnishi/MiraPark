@@ -1,6 +1,6 @@
 import React from 'react';
 import { ActivityIndicator } from 'react-native';
-import Button from './Button';
+import CustomButton from './CustomButton';
 
 interface LoadingButtonProps {
   title: string;
@@ -22,7 +22,7 @@ export default function LoadingButton(
     }: LoadingButtonProps) {
   if (loading) {
     return (
-        <Button
+        <CustomButton
             title=""
             onPress={onPress}
             disabled={true}
@@ -30,12 +30,12 @@ export default function LoadingButton(
             size={size}
         >
           <ActivityIndicator color="#fff" />
-        </Button>
+        </CustomButton>
     );
   }
 
   return (
-      <Button
+      <CustomButton
           title={title}
           onPress={onPress}
           disabled={disabled}

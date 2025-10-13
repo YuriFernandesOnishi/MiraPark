@@ -1,11 +1,12 @@
 import React, { useState } from "react";
-import { Alert } from "react-native";
+import {Alert, StyleSheet} from "react-native";
 import { useRouter } from "expo-router";
 
 import AuthForm from "../components/auth/AuthForm";
 import AuthInput from "../components/auth/AuthInput";
 import LoadingButton from "../components/ui/LoadingButton";
 import api from "../services/api";
+import {SafeAreaView} from "react-native-safe-area-context";
 
 export default function RegisterScreen() {
   const router = useRouter();
@@ -38,37 +39,46 @@ export default function RegisterScreen() {
   };
 
   return (
-      <AuthForm title="Cadastre-se" subtitle="Crie sua conta">
+      <SafeAreaView style={styles.container}>
+          <AuthForm title="Cadastre-se" subtitle="Crie sua conta">
 
-          <AuthInput
-              placeholder="Nome"
-              value={nome}
-              onChangeText={setNome}
-              keyboardType="email-address"
-              icon="email"
-          />
+              <AuthInput
+                  placeholder="Nome"
+                  value={nome}
+                  onChangeText={setNome}
+                  keyboardType="default"
+                  icon="style"
+              />
 
-        <AuthInput
-            placeholder="Email"
-            value={email}
-            onChangeText={setEmail}
-            keyboardType="email-address"
-            icon="email"
-        />
+              <AuthInput
+                  placeholder="Email"
+                  value={email}
+                  onChangeText={setEmail}
+                  keyboardType="email-address"
+                  icon="email"
+              />
 
-        <AuthInput
-            placeholder="Senha"
-            value={senha}
-            onChangeText={setSenha}
-            secureTextEntry
-            icon="lock"
-        />
+              <AuthInput
+                  placeholder="Senha"
+                  value={senha}
+                  onChangeText={setSenha}
+                  secureTextEntry
+                  icon="lock"
+              />
 
-        <LoadingButton
-            title="Registrar"
-            onPress={handleRegister}
-            loading={loading}
-        />
-      </AuthForm>
+              <LoadingButton
+                  title="Registrar"
+                  onPress={handleRegister}
+                  loading={loading}
+              />
+          </AuthForm>
+      </SafeAreaView>
+
   );
 }
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        justifyContent: "space-between",
+    }
+});

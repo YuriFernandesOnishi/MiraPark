@@ -1,7 +1,8 @@
 import React from "react";
-import { View, Text, Image, TouchableOpacity, StyleSheet } from "react-native";
+import {View, Text, Image, TouchableOpacity, StyleSheet, Button} from "react-native";
 import { useRouter } from "expo-router";
 import {SafeAreaView} from "react-native-safe-area-context";
+import CustomButton from "../components/ui/CustomButton";
 
 export default function Home() {
   const router = useRouter();
@@ -15,19 +16,11 @@ export default function Home() {
         </View>
 
         <View style={styles.buttonsContainer}>
-          <TouchableOpacity
-              style={[styles.button, styles.loginButton]}
-              onPress={() => router.push("/login")}
-          >
-            <Text style={styles.buttonText}>Login</Text>
-          </TouchableOpacity>
+          <CustomButton title="Entrar" onPress={() => router.push("/login")} variant="primary" size="large"/>
 
-          <TouchableOpacity
-              style={[styles.button, styles.registerButton]}
-              onPress={() => router.push("/register")}
-          >
-            <Text style={styles.buttonText}>Registrar</Text>
-          </TouchableOpacity>
+          <CustomButton title="Registrar" onPress={() => router.push("/register")} variant="primary" size="large"/>
+
+          <CustomButton title="Veiculos" onPress={() => router.push("/vehiclelist")} variant="primary" size="large"/>
         </View>
       </SafeAreaView>
   );
@@ -46,8 +39,5 @@ const styles = StyleSheet.create({
   title: { fontSize: 32, fontWeight: "700", color: "#6C63FF", marginBottom: 8 },
   subtitle: { fontSize: 22, color: "#A0A0FF", textAlign: "center", paddingHorizontal: 40 },
   buttonsContainer: { width: "100%", paddingHorizontal: 40 },
-  button: { paddingVertical: 16, borderRadius: 12, marginVertical: 8, alignItems: "center" },
-  loginButton: { backgroundColor: "#6C63FF" },
-  registerButton: { backgroundColor: "#6C63FF" },
   buttonText: { color: "#fff", fontWeight: "600", fontSize: 18 },
 });
