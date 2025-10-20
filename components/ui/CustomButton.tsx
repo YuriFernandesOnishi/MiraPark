@@ -8,8 +8,8 @@ interface ButtonProps {
     variant?: 'primary' | 'secondary' | 'outline';
     size?: 'small' | 'medium' | 'large';
     children?: React.ReactNode;
-    iconOnly?: boolean; // novo: botão só com ícone/texto '+'
-    style?: ViewStyle; // opcional para customizações pontuais
+    iconOnly?: boolean;
+    style?: ViewStyle;
     textStyle?: TextStyle;
 }
 
@@ -47,7 +47,6 @@ export default function CustomButton({
 
     const getSizeStyle = (): ViewStyle => {
         if (iconOnly) {
-            // tamanhos fixos para botão circular
             switch (size) {
                 case 'small':
                     return { width: 48, height: 48, borderRadius: 24 };
@@ -59,7 +58,6 @@ export default function CustomButton({
             }
         }
 
-        // estilos para botões normais (texto)
         switch (size) {
             case 'small':
                 return { paddingVertical: 10, paddingHorizontal: 14, borderRadius: 14 };
@@ -122,7 +120,6 @@ const styles = StyleSheet.create({
         fontWeight: '700',
     },
     iconText: {
-        // texto maior para o '+' em botão circular
         fontSize: 26,
         lineHeight: 28,
         fontWeight: '800',

@@ -25,7 +25,7 @@ export default function ModalVehicles({
                                        onConfirm,
                                        plateValue,
                                        onChangePlate,
-                                       title = "Liberar Entrada",
+                                       title = "Modal de Veículos",
                                    }: EntryModalProps) {
     return (
         <Modal
@@ -57,7 +57,7 @@ export default function ModalVehicles({
                                 size="small"
                             />
                             <CustomButton
-                                title="Liberar"
+                                title="Confirmar"
                                 onPress={onConfirm}
                                 variant="primary"
                                 size="small"

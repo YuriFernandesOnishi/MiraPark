@@ -47,9 +47,8 @@ export default function SearchModal({ visible, onClose, token }: SearchModalProp
             return Alert.alert("Atenção", "Digite um id ou placa para buscar.");
         }
 
-        // ID -> apenas números
         const isId = /^\d+$/.test(q);
-        // Placa -> exatamente 7 caracteres alfanuméricos
+
         const isPlate = /^[A-Za-z0-9]{7}$/.test(q);
 
         if (!isId && !isPlate) {
@@ -79,7 +78,6 @@ export default function SearchModal({ visible, onClose, token }: SearchModalProp
             }
         } catch (err: any) {
             console.error("Erro na busca:", err);
-            // tenta mostrar mensagem mais específica se existir
             const message = err?.response?.data?.mensagem || "Erro ao buscar veículo.";
             Alert.alert("Erro", message);
         } finally {

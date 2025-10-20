@@ -1,4 +1,3 @@
-// app/vehiclelist.tsx
 import React, { useState } from "react";
 import {
     View,
@@ -7,9 +6,8 @@ import {
     StyleSheet,
     ActivityIndicator,
     RefreshControl,
-    Alert,
+    Alert, Image,
 } from "react-native";
-import { useRouter } from "expo-router";
 import api from "../services/api";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useAuth } from "../hooks/useAuth";
@@ -24,12 +22,12 @@ type Vehicle = {
 };
 
 export default function Vehiclelist() {
-    const router = useRouter();
     const { token, loading: authLoading } = useAuth();
     const [vehicles, setVehicles] = useState<Vehicle[]>([]);
     const [loading, setLoading] = useState(false);
     const [refreshing, setRefreshing] = useState(false);
-    const [modalVisible, setModalVisible] = useState(false);
+    const [entryModalVisible, setEntryModalVisible] = useState(false);
+    const [exitModalVisible, setExitModalVisible] = useState(false);
     const [searchModalVisible, setSearchModalVisible] = useState(false);
     const [plateInput, setPlateInput] = useState("");
 
@@ -69,7 +67,7 @@ export default function Vehiclelist() {
             );
 
             Alert.alert("Sucesso", response.data.mensagem);
-            setModalVisible(false);
+            setEntryModalVisible(false);
             setPlateInput("");
             await fetchVehicles();
         } catch (error: any) {
@@ -80,7 +78,34 @@ export default function Vehiclelist() {
         }
     };
 
-    const renderVehicle = ({ item }: { item: Vehicle }) => (
+  const handleExit = async () => {
+    if (!plateInput.trim()) {
+      return Alert.alert("Erro", "Informe a placa do veículo.");
+    }
+    if (!token) return;
+
+    try {
+      setLoading(true);
+      const response = await api.post(
+          "/api/veiculos/saida",
+          { placa: plateInput.toUpperCase() },
+          { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      Alert.alert("Sucesso", response.data.mensagem);
+      setExitModalVisible(false);
+      setPlateInput("");
+      await fetchVehicles();
+    } catch (error: any) {
+      console.error(error);
+      Alert.alert("Erro", "Não foi possível liberar a saida.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+
+  const renderVehicle = ({ item }: { item: Vehicle }) => (
         <View style={styles.card}>
             <Text style={styles.plate}>{item.placa}</Text>
             <Text style={styles.entry}>
@@ -103,29 +128,38 @@ export default function Vehiclelist() {
                 <Text style={styles.title}>Veículos Ativos</Text>
 
                 <View style={styles.headerButtons}>
-                    {/* Botão de busca (ícone de lupa) */}
                     <CustomButton
-                        title="🔎"
                         onPress={() => setSearchModalVisible(true)}
                         variant="secondary"
                         size="small"
                         iconOnly
-                        style={{ marginRight: 10 }}
-                    />
+                    >
+                        <Image source={require("../assets/search-icon.png")} style={styles.image} />
+                    </CustomButton>
 
-                    {/* Botão circular '+' para liberar entrada */}
                     <CustomButton
                         title="+"
-                        onPress={() => setModalVisible(true)}
+                        onPress={() => setEntryModalVisible(true)}
                         variant="primary"
                         size="small"
                         iconOnly
                     />
+
+                  <CustomButton
+                      title="-"
+                      onPress={() => setExitModalVisible(true)}
+                      variant="primary"
+                      size="small"
+                      iconOnly
+                  />
+
                 </View>
             </View>
 
             {loading ? (
-                <ActivityIndicator size="large" color="#6C63FF" style={{ marginTop: 40 }} />
+                <ActivityIndicator size="large"
+                                   color="#6C63FF"
+                                   style={{ marginTop: 40 }} />
             ) : (
                 <FlatList
                     data={vehicles}
@@ -138,12 +172,22 @@ export default function Vehiclelist() {
             )}
 
             <ModalVehicles
-                visible={modalVisible}
-                onClose={() => setModalVisible(false)}
+                visible={entryModalVisible}
+                onClose={() => setEntryModalVisible(false)}
                 onConfirm={handleEntry}
                 plateValue={plateInput}
                 onChangePlate={setPlateInput}
+                title={"Registrar Entrada do Veículo"}
             />
+
+          <ModalVehicles
+              visible={exitModalVisible}
+              onClose={() => setExitModalVisible(false)}
+              onConfirm={handleExit}
+              plateValue={plateInput}
+              onChangePlate={setPlateInput}
+              title={"Registrar Saída do Veículo"}
+          />
 
             <SearchModal
                 visible={searchModalVisible}
@@ -171,6 +215,7 @@ const styles = StyleSheet.create({
     headerButtons: {
         flexDirection: "row",
         alignItems: "center",
+      gap: 10,
     },
     title: {
         fontSize: 28,
@@ -200,4 +245,9 @@ const styles = StyleSheet.create({
         marginTop: 40,
         fontSize: 16,
     },
+    image: {
+        width: 30,
+        height: 30,
+        resizeMode: "contain",
+    }
 });
