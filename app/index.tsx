@@ -1,5 +1,5 @@
 import React from "react";
-import {View, Text, Image, TouchableOpacity, StyleSheet, Button} from "react-native";
+import {View, Text, Image, StyleSheet} from "react-native";
 import { useRouter } from "expo-router";
 import {SafeAreaView} from "react-native-safe-area-context";
 import CustomButton from "../components/ui/CustomButton";
@@ -34,10 +34,33 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingVertical: 60,
   },
-  hero: { alignItems: "center" },
-  logo: { width: 150, height: 150, marginBottom: 20 },
-  title: { fontSize: 32, fontWeight: "700", color: "#6C63FF", marginBottom: 8 },
-  subtitle: { fontSize: 22, color: "#A0A0FF", textAlign: "center", paddingHorizontal: 40 },
-  buttonsContainer: { width: "100%", paddingHorizontal: 40 },
-  buttonText: { color: "#fff", fontWeight: "600", fontSize: 18 },
+  hero: {
+    alignItems: "center"
+  },
+  logo: {
+    width: 150,
+    height: 150,
+    marginBottom: 20
+  },
+  title: {
+    fontSize: 32,
+    fontWeight: "700",
+    color: "#6C63FF",
+    marginBottom: 8
+  },
+  subtitle: {
+    fontSize: 22,
+    color: "#A0A0FF",
+    textAlign: "center",
+    paddingHorizontal: 40
+  },
+  buttonsContainer: {
+    width: "100%",
+    paddingHorizontal: 40
+  },
+  buttonText: {
+    color: "#fff",
+    fontWeight: "600",
+    fontSize: 18
+  },
 });

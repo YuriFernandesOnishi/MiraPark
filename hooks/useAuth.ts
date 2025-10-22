@@ -54,7 +54,6 @@ export function useAuth() {
     };
   }, []);
 
-  // Login
   const login = async (email: string, senha: string) => {
     setLoading(true);
     try {
@@ -75,7 +74,7 @@ export function useAuth() {
     }
   };
 
-  // Logout
+
   const logout = async () => {
     setLoading(true);
     try {

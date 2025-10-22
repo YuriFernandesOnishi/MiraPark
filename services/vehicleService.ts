@@ -1,4 +1,3 @@
-// src/services/vehicleService.ts
 import api from "./api";
 
 export type VehicleActive = {

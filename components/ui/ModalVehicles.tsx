@@ -20,13 +20,13 @@ interface EntryModalProps {
 }
 
 export default function ModalVehicles({
-                                       visible,
-                                       onClose,
-                                       onConfirm,
-                                       plateValue,
-                                       onChangePlate,
-                                       title = "Modal de Veículos",
-                                   }: EntryModalProps) {
+                                          visible,
+                                          onClose,
+                                          onConfirm,
+                                          plateValue,
+                                          onChangePlate,
+                                          title = "Modal de Veículos",
+                                      }: EntryModalProps) {
     return (
         <Modal
             visible={visible}

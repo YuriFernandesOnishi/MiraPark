@@ -1,27 +1,19 @@
-import React, { useState } from "react";
+import React, {useState} from "react";
 import {
+    ActivityIndicator,
+    Alert,
+    FlatList,
+    Keyboard,
     Modal,
-    View,
+    StyleSheet,
     Text,
     TextInput,
-    StyleSheet,
     TouchableWithoutFeedback,
-    Keyboard,
-    ActivityIndicator,
-    FlatList,
-    Alert,
+    View,
 } from "react-native";
-import CustomButton from "./CustomButton";
-import api from "../../services/api";
 
-type VehicleRecord = {
-    placa: string;
-    dataEntrada: string;
-    horarioEntrada: string;
-    dataSaida?: string | null;
-    horarioSaida?: string | null;
-    valorPago?: number | null;
-};
+import CustomButton from "./CustomButton";
+import {VehicleRecord, vehicleService} from "../../services/vehicleService";
 
 interface SearchModalProps {
     visible: boolean;
@@ -29,7 +21,7 @@ interface SearchModalProps {
     token?: string | null;
 }
 
-export default function SearchModal({ visible, onClose, token }: SearchModalProps) {
+export default function SearchModal({ visible, onClose }: SearchModalProps) {
     const [query, setQuery] = useState("");
     const [loading, setLoading] = useState(false);
     const [singleResult, setSingleResult] = useState<VehicleRecord | null>(null);
@@ -48,15 +40,10 @@ export default function SearchModal({ visible, onClose, token }: SearchModalProp
         }
 
         const isId = /^\d+$/.test(q);
-
         const isPlate = /^[A-Za-z0-9]{7}$/.test(q);
 
         if (!isId && !isPlate) {
             return Alert.alert("Formato inválido", "Digite apenas números para ID ou 7 caracteres alfanuméricos para placa.");
-        }
-
-        if (!token) {
-            return Alert.alert("Erro", "Token ausente. Faça login novamente.");
         }
 
         try {
@@ -64,21 +51,16 @@ export default function SearchModal({ visible, onClose, token }: SearchModalProp
             clearResults();
 
             if (isId) {
-                const id = q;
-                const res = await api.get<VehicleRecord>(`/api/veiculos/id/${id}`, {
-                    headers: { Authorization: `Bearer ${token}` },
-                });
-                setSingleResult(res.data);
+                const result = await vehicleService.getById(q);
+                setSingleResult(result);
             } else if (isPlate) {
                 const plate = q.toUpperCase();
-                const res = await api.get<VehicleRecord[]>(`/api/veiculos/placa/${plate}`, {
-                    headers: { Authorization: `Bearer ${token}` },
-                });
-                setListResult(res.data);
+                const results = await vehicleService.getByPlate(plate);
+                setListResult(results);
             }
         } catch (err: any) {
             console.error("Erro na busca:", err);
-            const message = err?.response?.data?.mensagem || "Erro ao buscar veículo.";
+            const message = err?.response?.data?.mensage || "Erro ao buscar veículo.";
             Alert.alert("Erro", message);
         } finally {
             setLoading(false);
@@ -120,7 +102,16 @@ export default function SearchModal({ visible, onClose, token }: SearchModalProp
 
                         <View style={styles.buttonsRow}>
                             <CustomButton title="Buscar" onPress={validateAndSearch} variant="primary" size="small" />
-                            <CustomButton title="Fechar" onPress={() => { clearResults(); setQuery(""); onClose(); }} variant="outline" size="small" />
+                            <CustomButton
+                                title="Fechar"
+                                onPress={() => {
+                                    clearResults();
+                                    setQuery("");
+                                    onClose();
+                                }}
+                                variant="outline"
+                                size="small"
+                            />
                         </View>
 
                         <View style={{ marginTop: 12 }}>

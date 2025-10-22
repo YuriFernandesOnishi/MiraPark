@@ -40,15 +40,22 @@ export default function AuthInput({
 
 const styles = StyleSheet.create({
   inputContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#1E1E2F",
-    borderRadius: 12,
-    marginBottom: 16,
-    borderWidth: 1,
-    borderColor: "#333",
-    paddingHorizontal: 12
+      flexDirection: "row",
+      alignItems: "center",
+      backgroundColor: "#1E1E2F",
+      borderRadius: 12,
+      marginBottom: 16,
+      borderWidth: 1,
+      borderColor: "#333",
+      paddingHorizontal: 12
   },
-  icon: { marginRight: 8 },
-  input: { flex: 1, color: "#fff", paddingVertical: 14, fontSize: 16 },
+  icon: {
+          marginRight: 8
+      },
+  input: {
+      flex: 1,
+      color: "#fff",
+      paddingVertical: 14,
+      fontSize: 16
+  },
 });
