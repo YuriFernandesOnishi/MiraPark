@@ -221,7 +221,6 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
         paddingVertical: 14,
         width: "100%",
-        borderRadius: 14,
     },
     button: {
         backgroundColor: "#6C63FF",
