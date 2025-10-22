@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
     View,
     Text,
@@ -6,14 +6,15 @@ import {
     StyleSheet,
     ActivityIndicator,
     RefreshControl,
-    Alert, Image,
+    Alert,
+    Image,
 } from "react-native";
-import api from "../services/api";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useAuth } from "../hooks/useAuth";
 import ModalVehicles from "../components/ui/ModalVehicles";
 import CustomButton from "../components/ui/CustomButton";
 import SearchModal from "../components/ui/SearchModal";
+import { vehicleService } from "../services/vehicleService";
 
 type Vehicle = {
     placa: string;
@@ -21,7 +22,7 @@ type Vehicle = {
     horarioEntrada: string;
 };
 
-export default function Vehiclelist() {
+export default function VehicleList() {
     const { token, loading: authLoading } = useAuth();
     const [vehicles, setVehicles] = useState<Vehicle[]>([]);
     const [loading, setLoading] = useState(false);
@@ -31,20 +32,49 @@ export default function Vehiclelist() {
     const [searchModalVisible, setSearchModalVisible] = useState(false);
     const [plateInput, setPlateInput] = useState("");
 
-    const fetchVehicles = async () => {
+    const fetchVehicles = async (): Promise<void> => {
         if (!token) return;
         try {
             setLoading(true);
-            const response = await api.get<Vehicle[]>("/api/veiculos", {
-                headers: { Authorization: `Bearer ${token}` },
-            });
-            setVehicles(response.data);
+            const data = await vehicleService.getActiveVehicles();
+            setVehicles(data);
         } catch (error) {
             console.error("Erro ao buscar veículos:", error);
+            Alert.alert("Erro", "Não foi possível recuperar a lista de veículos.");
         } finally {
             setLoading(false);
         }
     };
+
+    useEffect(() => {
+        // cria uma função async no efeito e aguarda — evita "Promise is ignored"
+        let isActive = true;
+
+        const load = async () => {
+            if (!token) {
+                // limpa lista caso deslogue
+                if (isActive) setVehicles([]);
+                return;
+            }
+
+            try {
+                if (isActive) setLoading(true);
+                const data = await vehicleService.getActiveVehicles();
+                if (isActive) setVehicles(data);
+            } catch (error) {
+                console.error("Erro ao buscar veículos (useEffect):", error);
+                if (isActive) Alert.alert("Erro", "Não foi possível carregar veículos.");
+            } finally {
+                if (isActive) setLoading(false);
+            }
+        };
+
+        void load();
+
+        return () => {
+            isActive = false;
+        };
+    }, [token]);
 
     const onRefresh = async () => {
         setRefreshing(true);
@@ -56,56 +86,43 @@ export default function Vehiclelist() {
         if (!plateInput.trim()) {
             return Alert.alert("Erro", "Informe a placa do veículo.");
         }
-        if (!token) return;
-
         try {
             setLoading(true);
-            const response = await api.post(
-                "/api/veiculos/entrada",
-                { placa: plateInput.toUpperCase() },
-                { headers: { Authorization: `Bearer ${token}` } }
-            );
-
-            Alert.alert("Sucesso", response.data.mensagem);
+            const response = await vehicleService.entry(plateInput.toUpperCase());
+            Alert.alert("Sucesso", response?.mensagem || "Entrada registrada.");
             setEntryModalVisible(false);
             setPlateInput("");
             await fetchVehicles();
         } catch (error: any) {
-            console.error(error);
-            Alert.alert("Erro", "Não foi possível liberar a entrada.");
+            console.error("Erro ao registrar entrada:", error);
+            const msg = error?.response?.data?.mensagem || "Não foi possível liberar a entrada.";
+            Alert.alert("Erro", msg);
         } finally {
             setLoading(false);
         }
     };
 
-  const handleExit = async () => {
-    if (!plateInput.trim()) {
-      return Alert.alert("Erro", "Informe a placa do veículo.");
-    }
-    if (!token) return;
+    const handleExit = async () => {
+        if (!plateInput.trim()) {
+            return Alert.alert("Erro", "Informe a placa do veículo.");
+        }
+        try {
+            setLoading(true);
+            const response = await vehicleService.exit(plateInput.toUpperCase());
+            Alert.alert("Sucesso", response?.mensagem || "Saída registrada.");
+            setExitModalVisible(false);
+            setPlateInput("");
+            await fetchVehicles();
+        } catch (error: any) {
+            console.error("Erro ao registrar saída:", error);
+            const msg = error?.response?.data?.mensagem || "Não foi possível liberar a saída.";
+            Alert.alert("Erro", msg);
+        } finally {
+            setLoading(false);
+        }
+    };
 
-    try {
-      setLoading(true);
-      const response = await api.post(
-          "/api/veiculos/saida",
-          { placa: plateInput.toUpperCase() },
-          { headers: { Authorization: `Bearer ${token}` } }
-      );
-
-      Alert.alert("Sucesso", response.data.mensagem);
-      setExitModalVisible(false);
-      setPlateInput("");
-      await fetchVehicles();
-    } catch (error: any) {
-      console.error(error);
-      Alert.alert("Erro", "Não foi possível liberar a saida.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-
-  const renderVehicle = ({ item }: { item: Vehicle }) => (
+    const renderVehicle = ({ item }: { item: Vehicle }) => (
         <View style={styles.card}>
             <Text style={styles.plate}>{item.placa}</Text>
             <Text style={styles.entry}>
@@ -128,38 +145,18 @@ export default function Vehiclelist() {
                 <Text style={styles.title}>Veículos Ativos</Text>
 
                 <View style={styles.headerButtons}>
-                    <CustomButton
-                        onPress={() => setSearchModalVisible(true)}
-                        variant="secondary"
-                        size="small"
-                        iconOnly
-                    >
+                    <CustomButton onPress={() => setSearchModalVisible(true)} variant="secondary" size="small" iconOnly>
                         <Image source={require("../assets/search-icon.png")} style={styles.image} />
                     </CustomButton>
 
-                    <CustomButton
-                        title="+"
-                        onPress={() => setEntryModalVisible(true)}
-                        variant="primary"
-                        size="small"
-                        iconOnly
-                    />
+                    <CustomButton title="+" onPress={() => setEntryModalVisible(true)} variant="primary" size="small" iconOnly />
 
-                  <CustomButton
-                      title="-"
-                      onPress={() => setExitModalVisible(true)}
-                      variant="primary"
-                      size="small"
-                      iconOnly
-                  />
-
+                    <CustomButton title="-" onPress={() => setExitModalVisible(true)} variant="primary" size="small" iconOnly />
                 </View>
             </View>
 
             {loading ? (
-                <ActivityIndicator size="large"
-                                   color="#6C63FF"
-                                   style={{ marginTop: 40 }} />
+                <ActivityIndicator size="large" color="#6C63FF" style={{ marginTop: 40 }} />
             ) : (
                 <FlatList
                     data={vehicles}
@@ -180,20 +177,16 @@ export default function Vehiclelist() {
                 title={"Registrar Entrada do Veículo"}
             />
 
-          <ModalVehicles
-              visible={exitModalVisible}
-              onClose={() => setExitModalVisible(false)}
-              onConfirm={handleExit}
-              plateValue={plateInput}
-              onChangePlate={setPlateInput}
-              title={"Registrar Saída do Veículo"}
-          />
-
-            <SearchModal
-                visible={searchModalVisible}
-                onClose={() => setSearchModalVisible(false)}
-                token={token}
+            <ModalVehicles
+                visible={exitModalVisible}
+                onClose={() => setExitModalVisible(false)}
+                onConfirm={handleExit}
+                plateValue={plateInput}
+                onChangePlate={setPlateInput}
+                title={"Registrar Saída do Veículo"}
             />
+
+            <SearchModal visible={searchModalVisible} onClose={() => setSearchModalVisible(false)} />
         </SafeAreaView>
     );
 }
@@ -215,7 +208,7 @@ const styles = StyleSheet.create({
     headerButtons: {
         flexDirection: "row",
         alignItems: "center",
-      gap: 10,
+        gap: 10,
     },
     title: {
         fontSize: 28,
@@ -249,5 +242,5 @@ const styles = StyleSheet.create({
         width: 30,
         height: 30,
         resizeMode: "contain",
-    }
+    },
 });

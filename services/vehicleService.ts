@@ -16,17 +16,17 @@ export type VehicleRecord = {
 };
 
 export const vehicleService = {
-  getById: async (id: string) => {
+  getById: async (id: string): Promise<VehicleRecord> => {
     const res = await api.get<VehicleRecord>(`/api/veiculos/id/${id}`);
     return res.data;
   },
 
-  getByPlate: async (placa: string) => {
+  getByPlate: async (placa: string): Promise<VehicleRecord[]> => {
     const res = await api.get<VehicleRecord[]>(`/api/veiculos/placa/${placa}`);
     return res.data;
   },
 
-  getActiveVehicles: async () => {
+  getActiveVehicles: async (): Promise<VehicleActive[]> => {
     const res = await api.get<VehicleActive[]>(`/api/veiculos`);
     return res.data;
   },
@@ -37,7 +37,7 @@ export const vehicleService = {
   },
 
   exit: async (placa: string) => {
-    const res = await api.put(`/api/veiculos/saida`, { placa });
+    const res = await api.post(`/api/veiculos/saida`, { placa });
     return res.data;
   },
 };
