@@ -16,11 +16,8 @@ export default function Home() {
         </View>
 
         <View style={styles.buttonsContainer}>
-          <CustomButton title="Entrar" onPress={() => router.push("/login")} variant="primary" size="large"/>
-
-          <CustomButton title="Registrar" onPress={() => router.push("/register")} variant="primary" size="large"/>
-
-          <CustomButton title="Veiculos" onPress={() => router.push("/vehiclelist")} variant="primary" size="large"/>
+          <CustomButton title="Logar" onPress={() => router.push("/login")} variant="primary" size="large"/>
+          <CustomButton title="Registrar" onPress={() => router.push("/register")} variant="outline" size="large"/>
         </View>
       </SafeAreaView>
   );
@@ -32,7 +29,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#1E1E2F",
     alignItems: "center",
     justifyContent: "space-between",
-    paddingVertical: 60,
+    paddingVertical: 80,
   },
   hero: {
     alignItems: "center"
@@ -56,7 +53,9 @@ const styles = StyleSheet.create({
   },
   buttonsContainer: {
     width: "100%",
-    paddingHorizontal: 40
+    paddingHorizontal: 60,
+    paddingVertical: 40,
+    gap: 4,
   },
   buttonText: {
     color: "#fff",

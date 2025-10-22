@@ -27,13 +27,13 @@ export default function CustomButton({
     const getBackgroundColor = () => {
         switch (variant) {
             case 'primary':
-                return '#6C63FF';
+                return '#614bc5';
             case 'secondary':
                 return '#4B7BEC';
             case 'outline':
                 return 'transparent';
             default:
-                return '#6C63FF';
+                return '#614bc5';
         }
     };
 

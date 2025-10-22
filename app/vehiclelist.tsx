@@ -7,14 +7,13 @@ import {
     ActivityIndicator,
     RefreshControl,
     Alert,
-    Image,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useAuth } from "../hooks/useAuth";
 import ModalVehicles from "../components/ui/ModalVehicles";
-import CustomButton from "../components/ui/CustomButton";
 import SearchModal from "../components/ui/SearchModal";
 import { vehicleService } from "../services/vehicleService";
+import BottomNavbar from "../components/ui/BottomNavbar";
 
 type Vehicle = {
     placa: string;
@@ -139,19 +138,7 @@ export default function VehicleList() {
 
     return (
         <SafeAreaView style={styles.container}>
-            <View style={styles.header}>
-                <Text style={styles.title}>Veículos Ativos</Text>
-
-                <View style={styles.headerButtons}>
-                    <CustomButton onPress={() => setSearchModalVisible(true)} variant="secondary" size="small" iconOnly>
-                        <Image source={require("../assets/search-icon.png")} style={styles.image} />
-                    </CustomButton>
-
-                    <CustomButton title="+" onPress={() => setEntryModalVisible(true)} variant="primary" size="small" iconOnly />
-
-                    <CustomButton title="-" onPress={() => setExitModalVisible(true)} variant="primary" size="small" iconOnly />
-                </View>
-            </View>
+            <Text style={styles.title}>Veículos Ativos</Text>
 
             {loading ? (
                 <ActivityIndicator size="large" color="#6C63FF" style={{ marginTop: 40 }} />
@@ -160,11 +147,19 @@ export default function VehicleList() {
                     data={vehicles}
                     keyExtractor={(item) => item.placa + item.horarioEntrada}
                     renderItem={renderVehicle}
-                    contentContainerStyle={{ paddingBottom: 20 }}
+                    contentContainerStyle={{ paddingBottom: 120 }}
                     refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
-                    ListEmptyComponent={() => <Text style={styles.emptyText}>Nenhum veículo ativo no momento</Text>}
+                    ListEmptyComponent={() => (
+                        <Text style={styles.emptyText}>Nenhum veículo ativo no momento</Text>
+                    )}
                 />
             )}
+
+            <BottomNavbar
+                onSearchPress={() => setSearchModalVisible(true)}
+                onEntryPress={() => setEntryModalVisible(true)}
+                onExitPress={() => setExitModalVisible(true)}
+            />
 
             <ModalVehicles
                 visible={entryModalVisible}
@@ -196,23 +191,12 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
         paddingTop: 20,
     },
-    header: {
-        marginBottom: 20,
-        alignItems: "center",
-        gap: 10,
-        flexDirection: "row",
-        justifyContent: "space-between",
-    },
-    headerButtons: {
-        flexDirection: "row",
-        alignItems: "center",
-        gap: 10,
-    },
     title: {
         fontSize: 28,
         fontWeight: "700",
         color: "#6C63FF",
         textAlign: "center",
+        marginBottom: 16,
     },
     card: {
         backgroundColor: "#2A2A40",
@@ -235,10 +219,5 @@ const styles = StyleSheet.create({
         textAlign: "center",
         marginTop: 40,
         fontSize: 16,
-    },
-    image: {
-        width: 30,
-        height: 30,
-        resizeMode: "contain",
     },
 });
