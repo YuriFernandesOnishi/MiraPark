@@ -73,7 +73,7 @@ export default function ModalVehicles({
 const styles = StyleSheet.create({
     overlay: {
         flex: 1,
-        backgroundColor: "rgba(0,0,0,0.5)",
+        backgroundColor: "rgb(0,0,0)",
         justifyContent: "center",
         alignItems: "center",
         paddingHorizontal: 20,

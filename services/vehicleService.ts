@@ -37,7 +37,7 @@ export const vehicleService = {
   },
 
   exit: async (placa: string) => {
-    const res = await api.post(`/api/veiculos/saida`, { placa });
+    const res = await api.put(`/api/veiculos/saida`, { placa });
     return res.data;
   },
 };
