@@ -47,12 +47,10 @@ export default function VehicleList() {
     };
 
     useEffect(() => {
-        // cria uma função async no efeito e aguarda — evita "Promise is ignored"
         let isActive = true;
 
         const load = async () => {
             if (!token) {
-                // limpa lista caso deslogue
                 if (isActive) setVehicles([]);
                 return;
             }
