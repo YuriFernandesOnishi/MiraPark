@@ -8,12 +8,10 @@ import {
     RefreshControl,
     Alert,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { useAuth } from "../hooks/useAuth";
-import ModalVehicles from "../components/ui/ModalVehicles";
-import SearchModal from "../components/ui/SearchModal";
 import { vehicleService } from "../services/vehicleService";
-import BottomNavbar from "../components/ui/BottomNavbar";
+import BottomNavbar, { BOTTOM_NAVBAR_HEIGHT } from "../components/ui/BottomNavbar";
 
 type Vehicle = {
     placa: string;
@@ -23,13 +21,11 @@ type Vehicle = {
 
 export default function VehicleList() {
     const { token, loading: authLoading } = useAuth();
+    const insets = useSafeAreaInsets();
+
     const [vehicles, setVehicles] = useState<Vehicle[]>([]);
     const [loading, setLoading] = useState(false);
     const [refreshing, setRefreshing] = useState(false);
-    const [entryModalVisible, setEntryModalVisible] = useState(false);
-    const [exitModalVisible, setExitModalVisible] = useState(false);
-    const [searchModalVisible, setSearchModalVisible] = useState(false);
-    const [plateInput, setPlateInput] = useState("");
 
     const fetchVehicles = async (): Promise<void> => {
         if (!token) return;
@@ -79,46 +75,6 @@ export default function VehicleList() {
         setRefreshing(false);
     };
 
-    const handleEntry = async () => {
-        if (!plateInput.trim()) {
-            return Alert.alert("Erro", "Informe a placa do veículo.");
-        }
-        try {
-            setLoading(true);
-            const response = await vehicleService.entry(plateInput.toUpperCase());
-            Alert.alert("Sucesso", response?.mensagem || "Entrada registrada.");
-            setEntryModalVisible(false);
-            setPlateInput("");
-            await fetchVehicles();
-        } catch (error: any) {
-            console.error("Erro ao registrar entrada:", error);
-            const msg = error?.response?.data?.mensagem || "Não foi possível liberar a entrada.";
-            Alert.alert("Erro", msg);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const handleExit = async () => {
-        if (!plateInput.trim()) {
-            return Alert.alert("Erro", "Informe a placa do veículo.");
-        }
-        try {
-            setLoading(true);
-            const response = await vehicleService.exit(plateInput.toUpperCase());
-            Alert.alert("Sucesso", response?.mensagem || "Saída registrada.");
-            setExitModalVisible(false);
-            setPlateInput("");
-            await fetchVehicles();
-        } catch (error: any) {
-            console.error("Erro ao registrar saída:", error);
-            const msg = error?.response?.data?.mensagem || "Não foi possível liberar a saída.";
-            Alert.alert("Erro", msg);
-        } finally {
-            setLoading(false);
-        }
-    };
-
     const renderVehicle = ({ item }: { item: Vehicle }) => (
         <View style={styles.card}>
             <Text style={styles.plate}>{item.placa}</Text>
@@ -147,7 +103,11 @@ export default function VehicleList() {
                     data={vehicles}
                     keyExtractor={(item) => item.placa + item.horarioEntrada}
                     renderItem={renderVehicle}
-                    contentContainerStyle={{ paddingBottom: 120 }}
+                    // garante que a lista respeite o espaço da navbar + safe area e permita scroll até o final
+                    contentContainerStyle={{
+                        paddingBottom: BOTTOM_NAVBAR_HEIGHT + insets.bottom + 12,
+                        flexGrow: 1,
+                    }}
                     refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
                     ListEmptyComponent={() => (
                         <Text style={styles.emptyText}>Nenhum veículo ativo no momento</Text>
@@ -155,38 +115,14 @@ export default function VehicleList() {
                 />
             )}
 
-            <BottomNavbar
-                onSearchPress={() => setSearchModalVisible(true)}
-                onEntryPress={() => setEntryModalVisible(true)}
-                onExitPress={() => setExitModalVisible(true)}
-            />
-
-            <ModalVehicles
-                visible={entryModalVisible}
-                onClose={() => setEntryModalVisible(false)}
-                onConfirm={handleEntry}
-                plateValue={plateInput}
-                onChangePlate={setPlateInput}
-                title={"Registrar Entrada do Veículo"}
-            />
-
-            <ModalVehicles
-                visible={exitModalVisible}
-                onClose={() => setExitModalVisible(false)}
-                onConfirm={handleExit}
-                plateValue={plateInput}
-                onChangePlate={setPlateInput}
-                title={"Registrar Saída do Veículo"}
-            />
-
-            <SearchModal visible={searchModalVisible} onClose={() => setSearchModalVisible(false)} />
+            <BottomNavbar onRefresh={fetchVehicles} />
         </SafeAreaView>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
-        flex: 2,
+        flex: 1,
         backgroundColor: "#1E1E2F",
         paddingHorizontal: 20,
         paddingTop: 20,

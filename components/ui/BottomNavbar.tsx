@@ -13,12 +13,22 @@ import { useAuth } from "../../hooks/useAuth";
 import { vehicleService } from "../../services/vehicleService";
 import ModalVehicles from "../../components/ui/ModalVehicles";
 import SearchModal from "../../components/ui/SearchModal";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+
+/** exported constant so screens can reserve the correct FlatList padding */
+export const BOTTOM_NAVBAR_HEIGHT = 92;
 
 interface BottomNavbarProps {
     onRefresh?: () => void;
     showSearch?: boolean;
     showEntry?: boolean;
     showExit?: boolean;
+    // handlers provided by parent: if present, BottomNavbar will call them instead of opening its internal modals
+    onSearchPress?: () => void;
+    onEntryPress?: () => void;
+    onExitPress?: () => void;
+    // optional override for height
+    height?: number;
 }
 
 function AnimatedButton({ children, onPress }: { children: React.ReactNode; onPress?: () => void }) {
@@ -51,8 +61,15 @@ export default function BottomNavbar({
                                          showSearch = true,
                                          showEntry = true,
                                          showExit = true,
+                                         onSearchPress,
+                                         onEntryPress,
+                                         onExitPress,
+                                         height,
                                      }: BottomNavbarProps) {
     const { token } = useAuth();
+    const insets = useSafeAreaInsets();
+
+    const navHeight = height ?? BOTTOM_NAVBAR_HEIGHT;
 
     const [searchModalVisible, setSearchModalVisible] = useState(false);
     const [entryModalVisible, setEntryModalVisible] = useState(false);
@@ -60,7 +77,7 @@ export default function BottomNavbar({
     const [plateInput, setPlateInput] = useState("");
     const [loading, setLoading] = useState(false);
 
-    const navTranslateY = useRef(new Animated.Value(120)).current; // start off-screen
+    const navTranslateY = useRef(new Animated.Value(navHeight + 40)).current; // start off-screen
     const overlayOpacity = useRef(new Animated.Value(0)).current;
 
     useEffect(() => {
@@ -132,7 +149,10 @@ export default function BottomNavbar({
     };
 
     return (
-        <View style={styles.wrapper} pointerEvents={loading ? "none" : "auto"}>
+        <View style={[styles.wrapper, { bottom: 0 }]}
+              pointerEvents={loading ? "none" : "auto"}
+        >
+            {/* overlay */}
             <Animated.View
                 pointerEvents={searchModalVisible || entryModalVisible || exitModalVisible ? "auto" : "none"}
                 style={[styles.overlay, { opacity: overlayOpacity }]}
@@ -141,21 +161,21 @@ export default function BottomNavbar({
             <Animated.View
                 style={[styles.container, { transform: [{ translateY: navTranslateY }] }]}
             >
-                <View style={styles.navbar}>
+                <View style={[styles.navbar, { height: navHeight, paddingBottom: insets.bottom + 8 }]}>
                     {showSearch && (
-                        <AnimatedButton onPress={() => setSearchModalVisible(true)}>
+                        <AnimatedButton onPress={() => (onSearchPress ? onSearchPress() : setSearchModalVisible(true))}>
                             <Ionicons name="search" size={24} color="#FFFFFF" />
                         </AnimatedButton>
                     )}
 
                     {showEntry && (
-                        <AnimatedButton onPress={() => setEntryModalVisible(true)}>
+                        <AnimatedButton onPress={() => (onEntryPress ? onEntryPress() : setEntryModalVisible(true))}>
                             <Ionicons name="add" size={26} color="#FFFFFF" />
                         </AnimatedButton>
                     )}
 
                     {showExit && (
-                        <AnimatedButton onPress={() => setExitModalVisible(true)}>
+                        <AnimatedButton onPress={() => (onExitPress ? onExitPress() : setExitModalVisible(true))}>
                             <Ionicons name="remove" size={26} color="#FFFFFF" />
                         </AnimatedButton>
                     )}
@@ -168,6 +188,7 @@ export default function BottomNavbar({
                 )}
             </Animated.View>
 
+            {/* internal modals (only used when parent doesn't provide handlers) */}
             <ModalVehicles
                 visible={entryModalVisible}
                 onClose={() => setEntryModalVisible(false)}
@@ -194,7 +215,6 @@ export default function BottomNavbar({
 const styles = StyleSheet.create({
     wrapper: {
         position: "absolute",
-        bottom: 20,
         left: 0,
         right: 0,
         alignItems: "center",
@@ -219,14 +239,14 @@ const styles = StyleSheet.create({
         alignItems: "center",
         backgroundColor: "#313148",
         paddingHorizontal: 20,
-        paddingVertical: 14,
+        paddingVertical: 5,
         width: "100%",
     },
     button: {
         backgroundColor: "#6C63FF",
-        width: 58,
-        height: 58,
-        borderRadius: 29,
+        width: 62,
+        height: 62,
+        borderRadius: 32,
         alignItems: "center",
         justifyContent: "center",
         shadowColor: "#6C63FF",
