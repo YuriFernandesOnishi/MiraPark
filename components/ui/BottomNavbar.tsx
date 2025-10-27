@@ -15,7 +15,6 @@ import ModalVehicles from "../../components/ui/ModalVehicles";
 import SearchModal from "../../components/ui/SearchModal";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-/** exported constant so screens can reserve the correct FlatList padding */
 export const BOTTOM_NAVBAR_HEIGHT = 92;
 
 interface BottomNavbarProps {
@@ -23,13 +22,18 @@ interface BottomNavbarProps {
     showSearch?: boolean;
     showEntry?: boolean;
     showExit?: boolean;
-    // handlers provided by parent: if present, BottomNavbar will call them instead of opening its internal modals
     onSearchPress?: () => void;
     onEntryPress?: () => void;
     onExitPress?: () => void;
-    // optional override for height
     height?: number;
 }
+const normalizePlate = (q: string) => q.replace(/[^A-Za-z0-9]/g, "").toUpperCase();
+
+const isPlateValid = (q: string) => {
+    const p = normalizePlate(q);
+    return /^[A-Z]{3}[0-9]{4}$/.test(p) || /^[A-Z]{3}[0-9][A-Z][0-9]{2}$/.test(p);
+};
+
 
 function AnimatedButton({ children, onPress }: { children: React.ReactNode; onPress?: () => void }) {
     const scale = useRef(new Animated.Value(1)).current;
@@ -40,6 +44,8 @@ function AnimatedButton({ children, onPress }: { children: React.ReactNode; onPr
     const handlePressOut = () => {
         Animated.spring(scale, { toValue: 1, useNativeDriver: true }).start();
     };
+
+
 
     return (
         <Animated.View style={{ transform: [{ scale }] }}>
@@ -112,9 +118,14 @@ export default function BottomNavbar({
         if (!plateInput.trim()) return Alert.alert("Erro", "Informe a placa do veículo.");
         if (!token) return Alert.alert("Erro", "Usuário não autenticado.");
 
+        const cleaned = normalizePlate(plateInput);
+        if (!isPlateValid(plateInput)) {
+            return Alert.alert("Erro", "Placa inválida. Use AAA-1234 ou AAA1A23.");
+        }
+
         try {
             setLoading(true);
-            const response = await vehicleService.entry(plateInput.toUpperCase());
+            const response = await vehicleService.entry(cleaned);
             Alert.alert("Sucesso", response?.mensagem || "Entrada registrada.");
             setEntryModalVisible(false);
             setPlateInput("");
@@ -127,6 +138,7 @@ export default function BottomNavbar({
             setLoading(false);
         }
     };
+
 
     const handleExit = async () => {
         if (!plateInput.trim()) return Alert.alert("Erro", "Informe a placa do veículo.");
@@ -188,7 +200,6 @@ export default function BottomNavbar({
                 )}
             </Animated.View>
 
-            {/* internal modals (only used when parent doesn't provide handlers) */}
             <ModalVehicles
                 visible={entryModalVisible}
                 onClose={() => setEntryModalVisible(false)}

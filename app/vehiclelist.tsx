@@ -103,7 +103,6 @@ export default function VehicleList() {
                     data={vehicles}
                     keyExtractor={(item) => item.placa + item.horarioEntrada}
                     renderItem={renderVehicle}
-                    // garante que a lista respeite o espaço da navbar + safe area e permita scroll até o final
                     contentContainerStyle={{
                         paddingBottom: BOTTOM_NAVBAR_HEIGHT + insets.bottom + 12,
                         flexGrow: 1,
