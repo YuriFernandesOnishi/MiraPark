@@ -42,15 +42,16 @@ const styles = StyleSheet.create({
   inputContainer: {
       flexDirection: "row",
       alignItems: "center",
-      backgroundColor: "#1E1E2F",
+      backgroundColor: "#2f1e1e",
       borderRadius: 12,
       marginBottom: 16,
       borderWidth: 1,
-      borderColor: "#333",
+      borderColor: "#c54b4b",
       paddingHorizontal: 12
   },
   icon: {
-          marginRight: 8
+      marginRight: 8,
+      color: "#d95454"
       },
   input: {
       flex: 1,

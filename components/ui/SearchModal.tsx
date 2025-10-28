@@ -157,7 +157,7 @@ const styles = StyleSheet.create({
     },
     content: {
         width: "100%",
-        backgroundColor: "#2A2A40",
+        backgroundColor: "#402a2a",
         borderRadius: 12,
         padding: 18,
         maxHeight: "85%",
@@ -165,18 +165,18 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 18,
         fontWeight: "700",
-        color: "#6C63FF",
+        color: "#c54b4b",
         textAlign: "center",
         marginBottom: 8,
     },
     input: {
-        backgroundColor: "#1E1E2F",
+        backgroundColor: "#2f1e1e",
         color: "#fff",
         padding: 12,
         borderRadius: 8,
         fontSize: 16,
         borderWidth: 1,
-        borderColor: "#333",
+        borderColor: "#4d3232",
     },
     buttonsRow: {
         marginTop: 12,
@@ -185,12 +185,12 @@ const styles = StyleSheet.create({
         gap: 8,
     },
     sectionTitle: {
-        color: "#A0A0FF",
+        color: "#ffa0a0",
         fontWeight: "700",
         marginBottom: 8,
     },
     recordCard: {
-        backgroundColor: "#232333",
+        backgroundColor: "#332323",
         padding: 12,
         borderRadius: 10,
         marginBottom: 8,
@@ -202,7 +202,7 @@ const styles = StyleSheet.create({
         marginBottom: 4,
     },
     recordText: {
-        color: "#BFC3FF",
+        color: "#ffbfbf",
         fontSize: 14,
     },
     hintText: {

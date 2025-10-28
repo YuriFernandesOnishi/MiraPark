@@ -122,19 +122,19 @@ export default function VehicleList() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "#1E1E2F",
+        backgroundColor: "#2f1e1e",
         paddingHorizontal: 20,
         paddingTop: 20,
     },
     title: {
         fontSize: 28,
         fontWeight: "700",
-        color: "#6C63FF",
+        color: "#c54b4b",
         textAlign: "center",
         marginBottom: 16,
     },
     card: {
-        backgroundColor: "#2A2A40",
+        backgroundColor: "#402a2a",
         padding: 16,
         borderRadius: 12,
         marginVertical: 8,
@@ -146,11 +146,11 @@ const styles = StyleSheet.create({
     },
     entry: {
         fontSize: 16,
-        color: "#A0A0FF",
+        color: "#ffa0a0",
         marginTop: 4,
     },
     emptyText: {
-        color: "#A0A0FF",
+        color: "#ffa0a0",
         textAlign: "center",
         marginTop: 40,
         fontSize: 16,

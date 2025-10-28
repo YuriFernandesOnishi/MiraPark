@@ -28,7 +28,7 @@ export default function AuthForm({ title, subtitle, children }: AuthFormProps) {
 const styles = StyleSheet.create({
   safeArea: {
       flex: 1,
-      backgroundColor: "#12121F"
+      backgroundColor: "#1f1212"
   },
   container: {
       flex: 1,
@@ -41,13 +41,13 @@ const styles = StyleSheet.create({
   title: {
       fontSize: 36,
       fontWeight: "700",
-      color: "#6C63FF",
+      color: "#c54b4b",
       textAlign: "center",
       marginBottom: 4
   },
   subtitle: {
       fontSize: 16,
-      color: "#A0A0FF",
+      color: "#ffa0a0",
       textAlign: "center"
   },
 });

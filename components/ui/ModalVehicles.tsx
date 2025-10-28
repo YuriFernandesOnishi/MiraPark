@@ -73,14 +73,14 @@ export default function ModalVehicles({
 const styles = StyleSheet.create({
     overlay: {
         flex: 1,
-        backgroundColor: "rgb(0,0,0)",
+        backgroundColor: "rgba(0,0,0,0.5)",
         justifyContent: "center",
         alignItems: "center",
         paddingHorizontal: 20,
     },
     content: {
         width: "100%",
-        backgroundColor: "#2A2A40",
+        backgroundColor: "#402a2a",
         borderRadius: 12,
         padding: 20,
         elevation: 10,
@@ -88,19 +88,19 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 20,
         fontWeight: "700",
-        color: "#6C63FF",
+        color: "#c54b4b",
         textAlign: "center",
         marginBottom: 16,
     },
     input: {
-        backgroundColor: "#1E1E2F",
+        backgroundColor: "#2f1e1e",
         color: "#fff",
         padding: 12,
         borderRadius: 8,
         fontSize: 16,
         marginBottom: 20,
         borderWidth: 1,
-        borderColor: "#333",
+        borderColor: "#4d3232",
     },
     buttons: {
         flexDirection: "row",

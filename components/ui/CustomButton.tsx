@@ -27,22 +27,22 @@ export default function CustomButton({
     const getBackgroundColor = () => {
         switch (variant) {
             case 'primary':
-                return '#614bc5';
+                return '#c54b4b';
             case 'secondary':
-                return '#4B7BEC';
+                return '#ecd14b';
             case 'outline':
                 return 'transparent';
             default:
-                return '#614bc5';
+                return '#c54b4b';
         }
     };
 
     const getTextColor = () => {
-        return variant === 'outline' ? '#6C63FF' : '#fff';
+        return variant === 'outline' ? '#ff6363' : '#fff';
     };
 
     const getBorder = () => {
-        return variant === 'outline' ? { borderWidth: 2, borderColor: '#6C63FF' } : {};
+        return variant === 'outline' ? { borderWidth: 2, borderColor: '#ff6363' } : {};
     };
 
     const getSizeStyle = (): ViewStyle => {

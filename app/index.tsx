@@ -11,7 +11,7 @@ export default function Home() {
       <SafeAreaView style={styles.container} >
         <View style={styles.hero}>
           <Image source={require("../assets/logo.png")} style={styles.logo} resizeMode="contain" />
-          <Text style={styles.title}>MiraPark</Text>
+          <Text style={styles.title}>LikinPark</Text>
           <Text style={styles.subtitle}>Gerencie sua garagem de forma simples</Text>
         </View>
 
@@ -26,7 +26,7 @@ export default function Home() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#1E1E2F",
+    backgroundColor: "#2f1e1e",
     alignItems: "center",
     justifyContent: "space-between",
     paddingVertical: 80,
@@ -37,17 +37,17 @@ const styles = StyleSheet.create({
   logo: {
     width: 150,
     height: 150,
-    marginBottom: 20
+    marginBottom: 20,
   },
   title: {
     fontSize: 32,
     fontWeight: "700",
-    color: "#6C63FF",
+    color: "#c54b4b",
     marginBottom: 8
   },
   subtitle: {
     fontSize: 22,
-    color: "#A0A0FF",
+    color: "#ffa0a0",
     textAlign: "center",
     paddingHorizontal: 40
   },

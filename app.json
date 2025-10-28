@@ -1,9 +1,9 @@
 {
   "expo": {
-    "name": "MiraPark",
-    "slug": "MiraPark",
+    "name": "LikinPark",
+    "slug": "LikinPark",
     "version": "1.0.0",
-    "scheme": "mirapark",
+    "scheme": "likinpark",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
